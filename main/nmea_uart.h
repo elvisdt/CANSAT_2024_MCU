@@ -1,6 +1,25 @@
-#pragma once
+
+#ifndef _NMEA_UART_H
+#define _NMEA_UART_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stddef.h>
+#include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "driver/uart.h"
+#include "driver/gpio.h"
+
+#include "sdkconfig.h"
+#include "nmea_uart.h"
+#include "nmea.h"
+#include "esp_idf_version.h"
+
+
+#include "main.h"
+
 
 /**
  * @brief Initialize the interface connected to the GPS (I2C or UART)
@@ -18,3 +37,12 @@ void nmea_example_init_interface(void);
  * @param[in] timeout_ms  timeout for reading the message, in milliseconds
  */
 void nmea_example_read_line(char **out_line_buf, size_t *out_line_len, int timeout_ms);
+
+
+#ifdef __cplusplus
+} /*"C" */
+#endif
+
+#endif /* _ADCDEMO_H */
+
+

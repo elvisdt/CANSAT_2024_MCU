@@ -1,13 +1,4 @@
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "driver/uart.h"
-#include "sdkconfig.h"
 #include "nmea_uart.h"
-#include "nmea.h"
-#include "esp_idf_version.h"
-
-#include "driver/gpio.h"
-#include "main.h"
 
 #define UART_NUM                L86_UART_NUM
 #define UART_RX_PIN             L86_PIN_RXD
@@ -20,16 +11,17 @@ static char *s_last_buf_end;
 
 void nmea_example_init_interface(void)
 {
-    uart_config_t uart_config = {
-        .baud_rate = 9600,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+    uart_config_t uart_config;
+    uart_config.baud_rate = 9600;
+    uart_config.data_bits = UART_DATA_8_BITS;
+    uart_config.parity = UART_PARITY_DISABLE;
+    uart_config.stop_bits = UART_STOP_BITS_1;
+    uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
-        .source_clk = UART_SCLK_DEFAULT,
+        uart_config.source_clk = UART_SCLK_DEFAULT;
 #endif
-    };
+    
+
     ESP_ERROR_CHECK(uart_param_config(UART_NUM, &uart_config));
     ESP_ERROR_CHECK(uart_set_pin(UART_NUM,
                                  UART_PIN_NO_CHANGE, UART_RX_PIN,
@@ -62,14 +54,17 @@ void nmea_example_read_line(char **out_line_buf, size_t *out_line_len, int timeo
     s_total_bytes += read_bytes;
 
     /* find start (a dollar sign) */
-    char *start = memchr(s_buf, '$', s_total_bytes);
+    char *start = (char*) memchr(s_buf, '$', s_total_bytes);
+
     if (start == NULL) {
         s_total_bytes = 0;
         return;
     }
 
     /* find end of line */
-    char *end = memchr(start, '\r', s_total_bytes - (start - s_buf));
+    // char *end = memchr(start, '\r', s_total_bytes - (start - s_buf));
+    char *end = (char*) memchr(start, '\r', s_total_bytes - (start - s_buf));
+
     if (end == NULL || *(++end) != '\n') {
         return;
     }

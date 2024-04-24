@@ -1,6 +1,9 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include "driver/uart.h"
@@ -74,6 +77,8 @@ typedef struct {
     struct tm time;
     double latitude;                        /*!< Latitud (grados) */
     double longitude;                       /*!< Longitud (grados) */
+    double  altitude;                        /*!< Altitude (m) */
+    double  speed;                           /*!< Speed in kmH*/
     bool valid;                             /*!< validación de la data */
 } gps_t;
 
@@ -88,6 +93,11 @@ typedef struct{
 	// GPS
 	gps_t data_sat;
 }record_data_t;
+
+#ifdef __cplusplus
+} /*"C" */
+#endif
+
 
 
 #endif
